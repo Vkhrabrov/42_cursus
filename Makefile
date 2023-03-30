@@ -6,7 +6,7 @@
 #    By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/23 21:09:07 by vkhrabro          #+#    #+#              #
-#    Updated: 2023/03/27 00:59:54 by vkhrabro         ###   ########.fr        #
+#    Updated: 2023/03/31 00:34:55 by vkhrabro         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,16 @@
 NAME = libftprintf.a
 HEADER = ft_printf.h
 
-SRC_F:= ft_printf ft_print_char ft_print_string	ft_print_pointer ft_print_int ft_printf_unsigned_int ft_calculate_padding_x ft_printf_lower ft_printf_upper ft_print_percent ft_utoa ft_printf_main_add ft_printf_x_lower ft_printf_x_upper ft_eval_format_bonus ft_calculate_padding_right_int ft_calculate_padding_left_int
+SRC_F:= ft_printf ft_print_char ft_print_string	ft_print_pointer \
+ft_print_int ft_printf_unsigned_int ft_calculate_padding_x \
+ft_printf_lower ft_printf_upper ft_print_percent ft_utoa \
+ft_printf_main_add ft_printf_x_lower ft_printf_x_upper ft_eval_format_bonus \
+ft_calculate_padding_right_int ft_calculate_padding_left_int ft_printf_int_support \
+ft_printf_str_support
 
-SRC_B:= ft_eval_format_bonus ft_calculate_padding_right_int ft_calculate_padding_left_int ft_calculate_padding_x
+SRC_B:= ft_eval_format_bonus ft_calculate_padding_right_int \
+ft_calculate_padding_left_int ft_calculate_padding_x ft_printf_int_support \
+ft_printf_str_support
 
 LIBS:= libft/libft.a
 

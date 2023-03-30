@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_pointer.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42barcel>       +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 19:47:02 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 22:12:10 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/31 01:29:40 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-void	ft_print_pointer_second_part(t_print *tab, char *buffer, int digit);
+int	ft_print_pointer_second_part(t_print *tab, char *buffer, int digit);
+int	pointer_support(t_print *tab, char *buffer, int digit, int j);
 
-static void	ft_update_buffer(t_print *tab, char *buffer,
+static int	ft_update_buffer(t_print *tab, char *buffer,
 				int digit, unsigned long address)
 {
 	int		i;
@@ -41,10 +42,12 @@ static void	ft_update_buffer(t_print *tab, char *buffer,
 		}
 		buffer[i] = '\0';
 	}
-	ft_print_pointer_second_part(tab, buffer, digit);
+	if (ft_print_pointer_second_part(tab, buffer, digit) == -1)
+		return (-1);
+	return (0);
 }
 
-static void	ft_right_cs(t_print *tab, char *a)
+static int	ft_right_cs(t_print *tab, char *a)
 {
 	int	len;
 	int	pad;
@@ -54,10 +57,14 @@ static void	ft_right_cs(t_print *tab, char *a)
 	if (tab->wdt > len)
 		pad = tab->wdt - len;
 	while (pad--)
-		tab->tl += ft_putchar(' ');
+	{
+		if (print(tab, ' ') == -1)
+			return (-1);
+	}
+	return (0);
 }
 
-static void	ft_left_cs(t_print *tab, char *a)
+static int	ft_left_cs(t_print *tab, char *a)
 {
 	int	len;
 	int	pad;
@@ -67,10 +74,14 @@ static void	ft_left_cs(t_print *tab, char *a)
 	if (tab->wdt > len)
 		pad = tab->wdt - len;
 	while (pad--)
-		tab->tl += ft_putchar(' ');
+	{
+		if (print(tab, ' ') == -1)
+			return (-1);
+	}
+	return (0);
 }
 
-void	ft_print_pointer(t_print *tab)
+int	ft_print_pointer(t_print *tab)
 {
 	unsigned long	address;
 	char			*hex_digits;
@@ -84,34 +95,27 @@ void	ft_print_pointer(t_print *tab)
 	buffer[0] = '0';
 	buffer[1] = 'x';
 	address = (unsigned long)va_arg(tab->args, void *);
-	ft_update_buffer(tab, buffer, digit, address);
+	if (ft_update_buffer(tab, buffer, digit, address) == -1)
+		return (-1);
+	return (0);
 }
 
-void	ft_print_pointer_second_part(t_print *tab, char *buffer, int digit)
+int	ft_print_pointer_second_part(t_print *tab, char *buffer, int digit)
 {
 	int	j;
 
+	j = 0;
 	if (tab->wdt && !tab->dash)
-		ft_right_cs(tab, buffer);
-	tab->tl += ft_putchar(buffer[0]);
-	tab->tl += ft_putchar(buffer[1]);
-	if (digit == 0)
 	{
-		tab->tl += ft_putchar('0');
+		if (ft_right_cs(tab, buffer) == -1)
+			return (-1);
 	}
-	else if (digit != 0)
-	{
-		j = ft_strlen(buffer) - 1;
-		while (*buffer && j >= 2)
-		{	
-			tab->tl += ft_putchar(buffer[j]);
-			j--;
-		}
-	}
+	if (pointer_support(tab, buffer, digit, j) == -1)
+		return (-1);
 	if (tab->wdt && tab->dash && tab->wdt >= tab->prc)
-		ft_left_cs(tab, buffer);
-	tab->wdt = 0;
-	tab->dash = 0;
-	tab->zero = 0;
-	tab->prc = 0;
+	{
+		if (ft_left_cs(tab, buffer) == -1)
+			return (-1);
+	}
+	return (0);
 }

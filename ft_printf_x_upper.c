@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf_x_X_conv.c                               :+:      :+:    :+:   */
+/*   ft_printf_x_upper.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42barcel>       +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/13 19:01:12 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 21:11:34 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/31 01:24:22 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void	ft_precision_upper(t_print *tab, char *j, size_t i);
-void	ft_right_cs_x_upper(t_print *tab, char *a);
-void	ft_tabs_precisions_upper(t_print *tab, char *j, size_t i);
+int	ft_precision_upper(t_print *tab, char *j, size_t i);
+int	ft_right_cs_x_upper(t_print *tab, char *a);
+int	ft_tabs_precisions_upper(t_print *tab, char *j, size_t i);
 
 static int	ft_size(unsigned int n)
 {
@@ -36,7 +36,7 @@ static int	ft_size(unsigned int n)
 	return (i);
 }
 
-void	ft_printf_x_upper(t_print *tab, int digit, unsigned int a)
+int	ft_printf_x_upper(t_print *tab, int digit, unsigned int a)
 {
 	char	*hex_digits;
 	int		k;
@@ -48,12 +48,9 @@ void	ft_printf_x_upper(t_print *tab, int digit, unsigned int a)
 	hex_digits = "0123456789ABCDEF";
 	j = (char *)malloc(sizeof(char) * (k + 1));
 	if (!j)
-		return ;
+		return (0);
 	if (a == 0 && !tab->pnt)
-	{
-		j[i] = '0';
-		i = 1;
-	}
+		j[i++] = '0';
 	while (a > 0)
 	{
 		digit = a % 16;
@@ -62,20 +59,29 @@ void	ft_printf_x_upper(t_print *tab, int digit, unsigned int a)
 		i++;
 	}
 	j[i] = '\0';
-	ft_tabs_precisions_upper(tab, j, i);
+	if (ft_tabs_precisions_upper(tab, j, i) == -1)
+		return (-1);
+	return (0);
 }
 
-void	ft_tabs_precisions_upper(t_print *tab, char *j, size_t i)
+int	ft_tabs_precisions_upper(t_print *tab, char *j, size_t i)
 {
 	if (tab->wdt && !tab->dash && tab->wdt > tab->prc)
-		ft_right_cs_x_upper(tab, j);
+	{
+		if (ft_right_cs_x_upper(tab, j) == -1)
+			return (-1);
+	}
 	if (i > 0)
 	{
 		if (!tab->is_zero && tab->hash && j[i - 1] != '0')
 		{
-			tab->tl += ft_putchar('0');
-			tab->tl += ft_putchar('X');
+			if (print(tab, '0') == -1)
+				return (-1);
+			if (print(tab, 'X') == -1)
+				return (-1);
 		}
 	}	
-	ft_precision_upper(tab, j, i);
+	if (ft_precision_upper(tab, j, i) == -1)
+		return (-1);
+	return (0);
 }

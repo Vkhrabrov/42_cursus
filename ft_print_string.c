@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_string.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42barcel>       +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 19:04:28 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 22:14:52 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/31 01:30:26 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,11 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-void	ft_print_string_2(t_print *tab, char *a, size_t i);
+int	ft_print_string_2(t_print *tab, char *a, size_t i);
+int	strint_right_cs_support(t_print *tab, int pad);
+int	str_support(t_print *tab, char *a, size_t i);
 
-static void	ft_update_tab(t_print *tab, int value)
-{
-	tab->tl += value;
-}
-
-static void	ft_right_cs(t_print *tab, char *a)
+static int	ft_right_cs(t_print *tab, char *a)
 {
 	int	len;
 	int	pad;
@@ -34,25 +31,12 @@ static void	ft_right_cs(t_print *tab, char *a)
 		len = tab->prc;
 	if (tab->wdt > len)
 		pad = tab->wdt - len;
-	if (tab->zero == 0)
-	{
-		while (pad--)
-		{
-			ft_putchar(' ');
-			ft_update_tab(tab, 1);
-		}
-	}
-	else
-	{
-		while (pad--)
-		{
-			ft_putchar('0');
-			ft_update_tab(tab, 1);
-		}
-	}
+	if (strint_right_cs_support(tab, pad) == -1)
+		return (-1);
+	return (0);
 }
 
-static void	ft_left_cs(t_print *tab, char *a)
+static int	ft_left_cs(t_print *tab, char *a)
 {
 	int	len;
 	int	pad;
@@ -65,12 +49,13 @@ static void	ft_left_cs(t_print *tab, char *a)
 		pad = tab->wdt - len;
 	while (pad--)
 	{
-		ft_putchar(' ');
-		ft_update_tab(tab, 1);
+		if (print(tab, ' ') == -1)
+			return (-1);
 	}
+	return (0);
 }
 
-void	ft_print_string(t_print *tab)
+int	ft_print_string(t_print *tab)
 {
 	char	*a;
 	size_t	i;
@@ -83,33 +68,45 @@ void	ft_print_string(t_print *tab)
 	{
 		if (tab->wdt && !tab->dash)
 		{
-			ft_right_cs(tab, a);
+			if (ft_right_cs(tab, a) == -1)
+				return (-1);
 		}
-		while (a[i] && i < (size_t)tab->prc)
-			tab->tl += ft_putchar(a[i++]);
+		if (str_support(tab, a, i) == -1)
+			return (-1);
 		if (tab->wdt && tab->dash)
-			ft_left_cs(tab, a);
+		{
+			if (ft_left_cs(tab, a) == -1)
+				return (-1);
+		}
 	}
-	ft_print_string_2(tab, a, i);
+	if (ft_print_string_2(tab, a, i) == -1)
+		return (-1);
+	return (0);
 }
 
-void	ft_print_string_2(t_print *tab, char *a, size_t i)
+int	ft_print_string_2(t_print *tab, char *a, size_t i)
 {
 	if (tab->pnt == 0)
 	{
 		if (tab->wdt && !tab->dash)
 		{
-			ft_right_cs(tab, a);
+			if (ft_right_cs(tab, a) == -1)
+				return (-1);
 		}
 		while (*a && i < ft_strlen(a))
 		{
-			tab->tl += ft_putchar(a[i]);
+			if (print(tab, a[i]) == -1)
+				return (-1);
 			i++;
 		}
 		if (tab->wdt && tab->dash)
-			ft_left_cs(tab, a);
+		{
+			if (ft_left_cs(tab, a) == -1)
+				return (-1);
+		}
 	}
 	tab->dash = 0;
 	tab->zero = 0;
 	tab->wdt = 0;
+	return (0);
 }

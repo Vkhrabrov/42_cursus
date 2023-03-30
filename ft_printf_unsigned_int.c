@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   printf_unsigned_int.c                              :+:      :+:    :+:   */
+/*   ft_printf_unsigned_int.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42barcel>       +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/12 20:39:25 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 22:32:27 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:36:04 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 static int	ft_right_cs_zeroes(t_print *tab, char *a,
 				int len, int pad);
 
-static void	ft_right_cs(t_print *tab, char *a)
+static int	ft_right_cs(t_print *tab, char *a)
 {
 	int	len;
 	int	pad;
@@ -38,9 +38,14 @@ static void	ft_right_cs(t_print *tab, char *a)
 		if (tab->prc < len)
 			pad = tab->wdt - len;
 		while (pad--)
-			tab->tl += ft_putchar(' ');
+		{
+			if (print(tab, ' ') == -1)
+				return (-1);
+		}
 	}
-	ft_right_cs_zeroes(tab, a, len, pad);
+	if (ft_right_cs_zeroes(tab, a, len, pad) == -1)
+		return (-1);
+	return (0);
 }
 
 static int	ft_right_cs_zeroes(t_print *tab, char *a,
@@ -52,19 +57,23 @@ static int	ft_right_cs_zeroes(t_print *tab, char *a,
 	if (tab->wdt > len && tab->zero && tab->pnt)
 	{
 		tab->zero = 0;
-		ft_right_cs(tab, a);
+		if (ft_right_cs(tab, a) == -1)
+			return (-1);
 		return (0);
 	}
 	if (tab->wdt > len && tab->zero && !tab->pnt)
 	{
 		pad = tab->wdt - len;
 		while (pad--)
-			tab->tl += ft_putchar('0');
+		{
+			if (print(tab, '0') == -1)
+				return (-1);
+		}
 	}
 	return (0);
 }
 
-static void	ft_left_cs(t_print *tab, char *a)
+static int	ft_left_cs(t_print *tab, char *a)
 {
 	int	len;
 	int	pad;
@@ -79,11 +88,15 @@ static void	ft_left_cs(t_print *tab, char *a)
 		if (tab->prc < len)
 			pad = tab->wdt - len;
 		while (pad--)
-			tab->tl += ft_putchar(' ');
+		{
+			if (print(tab, ' ') == -1)
+				return (-1);
+		}
 	}
+	return (0);
 }
 
-static void	ft_precision(t_print *tab, char *j, size_t i)
+static int	ft_precision(t_print *tab, char *j, size_t i)
 {
 	size_t	k;
 
@@ -91,18 +104,26 @@ static void	ft_precision(t_print *tab, char *j, size_t i)
 	{
 		k = tab->prc - ft_strlen(j);
 		while (k--)
-			tab->tl += ft_putchar('0');
+		{
+			if (print(tab, '0') == -1)
+				return (-1);
+		}
 	}
 	while (j[i])
 	{
-		tab->tl += ft_putchar(j[i]);
+		if (print(tab, j[i]) == -1)
+			return (-1);
 		i++;
 	}
 	if (tab->wdt && tab->dash && tab->wdt >= tab->prc)
-		ft_left_cs(tab, j);
+	{
+		if (ft_left_cs(tab, j) == -1)
+			return (-1);
+	}
+	return (0);
 }
 
-void	ft_printf_unsigned_int(t_print *tab)
+int	ft_printf_unsigned_int(t_print *tab)
 {
 	size_t			i;
 	char			*j;
@@ -117,10 +138,13 @@ void	ft_printf_unsigned_int(t_print *tab)
 		free(j);
 		j = ft_strdup("");
 		if (!j)
-			return ;
+			return (0);
 	}
 	if (tab->wdt && !tab->dash && tab->wdt >= tab->prc)
-		ft_right_cs(tab, j);
-	ft_precision(tab, j, i);
+		if (ft_right_cs(tab, j) == -1)
+			return (-1);
+	if (ft_precision(tab, j, i) == -1)
+		return (-1);
 	free(j);
+	return (0);
 }

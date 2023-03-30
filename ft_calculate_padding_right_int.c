@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 22:33:36 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 22:37:37 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/30 23:25:14 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,14 @@ void	calculate_padding(t_print *tab, char *a, int len, int *pad)
 	}
 }
 
-void	write_padding(t_print *tab, int pad)
+int	write_padding(t_print *tab, int pad)
 {
 	while (pad--)
-		tab->tl += ft_putchar(' ');
+	{
+		if (print(tab, ' ') == -1)
+			return (-1);
+	}
+	return (0);
 }
 
 int	ft_zero_pad(t_print *tab, char *a, int len)
@@ -71,8 +75,22 @@ int	ft_zero_pad(t_print *tab, char *a, int len)
 		else
 			pad = tab->wdt - len;
 		while (pad--)
-			tab->tl += ft_putchar('0');
+		{
+			if (print(tab, '0') == -1)
+				return (-1);
+		}
 		return (1);
 	}
+	return (0);
+}
+
+int	print(t_print *tab, char c)
+{
+	int	i;
+
+	i = ft_putchar(c);
+	if (i == -1)
+		return (-1);
+	tab->tl += 1;
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/27 00:50:59 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 21:42:25 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/30 19:41:59 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,20 +43,27 @@ int	calculate_padding_x(t_print *tab, char *a, int len)
 	return (pad);
 }
 
-void	print_hash(t_print *tab, int len, int *pad)
+int	print_hash(t_print *tab, int len, int *pad)
 {
 	tab->is_zero = 1;
-	tab->tl += ft_putchar('0');
-	tab->tl += ft_putchar('x');
+	if (print(tab, '0') == -1)
+		return (-1);
+	if (print(tab, 'x') == -1)
+		return (-1);
 	*pad = tab->wdt - len - 2;
+	return (0);
 }
 
-void	ft_apply_padding(t_print *tab, int pad)
+int	ft_apply_padding(t_print *tab, int pad)
 {
 	if (pad < 0)
 		pad = 0;
 	while (pad--)
-		tab->tl += ft_putchar('0');
+	{
+		if (print(tab, '0') == -1)
+			return (-1);
+	}
+	return (0);
 }
 
 int	ft_is_hash_condition(char *a, int len, int pad)

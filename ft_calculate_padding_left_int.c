@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/26 23:59:35 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 21:34:35 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:29:29 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,19 @@ void	empty_string(char **j)
 		return ;
 }
 
-void	print_hash_left(t_print *tab, int len, int *pad)
+int	print_hash_left(t_print *tab, int len, int *pad)
 {
 	tab->is_zero = 1;
-	tab->tl += ft_putchar('0');
-	tab->tl += ft_putchar('X');
+	if (print(tab, '0') == -1)
+		return (-1);
+	if (print(tab, 'X') == -1)
+		return (-1);
 	*pad = tab->wdt - len - 2;
+	return (0);
+}
+
+void	tab_return(t_print *tab, char *a)
+{
+	tab->zero = 0;
+	ft_right_cs_int(tab, a);
 }

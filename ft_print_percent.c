@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_percent.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42barcel>       +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/07 21:24:15 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 21:10:08 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:24:05 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-static void	ft_update_tab(t_print *tab, int value)
-{
-	tab->tl += value;
-}
-
-static void	ft_right_cs(t_print *tab)
+static int	ft_right_cs(t_print *tab)
 {
 	int	pad;
 
@@ -31,8 +26,8 @@ static void	ft_right_cs(t_print *tab)
 		pad = tab->wdt - 1;
 		while (pad--)
 		{
-			ft_putchar(' ');
-			ft_update_tab(tab, 1);
+			if (print(tab, ' ') == -1)
+				return (-1);
 		}
 	}
 	if (tab->wdt && tab->zero)
@@ -40,13 +35,14 @@ static void	ft_right_cs(t_print *tab)
 		pad = tab->wdt - 1;
 		while (pad--)
 		{
-			ft_putchar('0');
-			ft_update_tab(tab, 1);
+			if (print(tab, '0') == -1)
+				return (-1);
 		}
 	}
+	return (0);
 }
 
-static void	ft_left_cs(t_print *tab)
+static int	ft_left_cs(t_print *tab)
 {
 	int	pad;
 
@@ -55,21 +51,30 @@ static void	ft_left_cs(t_print *tab)
 		pad = tab->wdt - 1;
 	while (pad--)
 	{
-		ft_putchar(' ');
-		ft_update_tab(tab, 1);
+		if (print(tab, ' ') == -1)
+			return (-1);
 	}
+	return (0);
 }
 
-void	ft_print_percent(t_print *tab)
+int	ft_print_percent(t_print *tab)
 {
 	if (tab->wdt && !tab->dash)
-		ft_right_cs(tab);
-	tab->tl += ft_putchar('%');
+	{
+		if (ft_right_cs(tab) == -1)
+			return (-1);
+	}
+	if (print(tab, '%') == -1)
+		return (-1);
 	tab->perc = 1;
 	if (tab->wdt && tab->dash)
-		ft_left_cs(tab);
+	{
+		if (ft_left_cs(tab) == -1)
+			return (-1);
+	}
 	tab->zero = 0;
 	tab->dash = 0;
 	tab->prc = 0;
 	tab->wdt = 0;
+	return (0);
 }

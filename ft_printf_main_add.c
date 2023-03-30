@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf_main_add.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42barcel>       +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/08 18:16:49 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 22:30:38 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/29 22:36:55 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-void	ft_printf_main_add(t_print *tab, const char *format, int i, int total)
+int	ft_printf_main_add(t_print *tab, const char *format, int i, int total)
 {
 	tab->tl = total;
 	while (format[++i])
@@ -25,7 +25,8 @@ void	ft_printf_main_add(t_print *tab, const char *format, int i, int total)
 		if (format[i] == '%')
 		{
 			ft_eval_format_bonus(tab, format, i + 1);
-			ft_eval_conversion(tab, format, tab->pos);
+			if (ft_eval_conversion(tab, format, tab->pos) == -1)
+				return (-1);
 			tab->pnt = 0;
 			tab->prc = 0;
 			tab->wdt = 0;
@@ -36,6 +37,10 @@ void	ft_printf_main_add(t_print *tab, const char *format, int i, int total)
 				i++;
 		}
 		else
-			tab->tl += ft_putchar(format[i]);
+		{
+			if (print(tab, format[i]) == -1)
+				return (-1);
+		}
 	}
+	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_print_char.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkhrabro <vkhrabro@student.42barcel>       +#+  +:+       +#+        */
+/*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/22 21:04:51 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/28 21:06:52 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:30:35 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	ft_update_tab(t_print *tab, int value)
 	tab->tl += value;
 }
 
-void	ft_right_cs(t_print *tab)
+int	ft_right_cs(t_print *tab)
 {
 	int	pad;
 
@@ -30,43 +30,52 @@ void	ft_right_cs(t_print *tab)
 	{
 		while (pad--)
 		{
-			ft_putchar(' ');
-			ft_update_tab(tab, 1);
+			if (print(tab, ' ') == -1)
+				return (-1);
 		}
 	}
 	else
 	{
 		while (pad--)
 		{
-			ft_putchar('0');
-			ft_update_tab(tab, 1);
+			if (print(tab, '0') == -1)
+				return (-1);
 		}
 	}
+	return (0);
 }
 
-void	ft_left_cs(t_print *tab)
+int	ft_left_cs(t_print *tab)
 {
 	int	pad;
 
 	pad = tab->wdt - 1;
 	while (pad--)
 	{
-		ft_putchar(' ');
-		ft_update_tab(tab, 1);
+		if (print(tab, ' ') == -1)
+			return (-1);
 	}
+	return (0);
 }
 
-void	ft_print_char(t_print *tab)
+int	ft_print_char(t_print *tab)
 {
 	char	a;
 
 	a = va_arg(tab->args, int);
-	ft_update_tab(tab, 1);
 	if (tab->wdt && !tab->dash)
-		ft_right_cs(tab);
-	ft_putchar(a);
+	{
+		if (ft_right_cs(tab) == -1)
+			return (-1);
+	}
+	if (print(tab, a) == -1)
+		return (-1);
 	if (tab->wdt && tab->dash)
-		ft_left_cs(tab);
+	{
+		if (ft_left_cs(tab) == -1)
+			return (-1);
+	}
 	tab->dash = 0;
 	tab->zero = 0;
+	return (0);
 }

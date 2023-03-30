@@ -6,7 +6,7 @@
 /*   By: vkhrabro <vkhrabro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/21 21:04:15 by vkhrabro          #+#    #+#             */
-/*   Updated: 2023/03/26 22:45:02 by vkhrabro         ###   ########.fr       */
+/*   Updated: 2023/03/30 22:32:18 by vkhrabro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,24 +31,25 @@ t_print	*ft_initialize_tab(t_print *tab)
 	return (tab);
 }
 
-void	ft_eval_conversion(t_print *tab, const char *format, int pos)
+int	ft_eval_conversion(t_print *tab, const char *format, int pos)
 {
 	if (format[pos] == 'c')
-		ft_print_char(tab);
+		return (ft_print_char(tab));
 	else if (format[pos] == 's')
-		ft_print_string(tab);
+		return (ft_print_string(tab));
 	else if (format[pos] == 'p')
-		ft_print_pointer(tab);
+		return (ft_print_pointer(tab));
 	else if (format[pos] == 'd' || format[pos] == 'i')
-		ft_print_int(tab);
+		return (ft_print_int(tab));
 	else if (format[pos] == 'u')
-		ft_printf_unsigned_int(tab);
+		return (ft_printf_unsigned_int(tab));
 	else if (format[pos] == 'x')
-		ft_printf_lower(tab);
+		return (ft_printf_lower(tab));
 	else if (format[pos] == 'X')
-		ft_printf_upper(tab);
+		return (ft_printf_upper(tab));
 	else if (format[pos] == '%')
-		ft_print_percent(tab);
+		return (ft_print_percent(tab));
+	return (0);
 }
 
 int	ft_is_valid_specifier(char c)
@@ -71,7 +72,8 @@ int	ft_printf(const char *format, ...)
 	if (format)
 	{
 		va_start(tab->args, format);
-		ft_printf_main_add(tab, format, i, tab->tl);
+		if (ft_printf_main_add(tab, format, i, tab->tl) == -1)
+			return (-1);
 		va_end(tab->args);
 	}
 	ret = tab->tl;
